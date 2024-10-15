@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stddef.h>
 
 #include "hsm.h"
@@ -91,7 +92,8 @@ void transition_to_deep_history(HSM_state_t * machine, HSM_state_t * state) {
 void handle_event(HSM_state_t * machine, HSM_event_t * event) {
     bool handled = false;
     HSM_state_t * s = active_state(machine);
-    while (s != NULL && !(handled = s->on_event(s, event))) {
+    while (s != NULL && !handled) {
+        handled = s->on_event(s, event);
         s = s->parent;
     }
 

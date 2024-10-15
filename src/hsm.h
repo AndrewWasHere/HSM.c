@@ -1,13 +1,16 @@
 #pragma once
 
-typedef void (* state_handler_t)(void * self);
-typedef void (* event_handler_t)(void * self, void * event);
+#include <stdbool.h>
 
+struct HSM_state_s;
+
+typedef void (* state_handler_t)(struct HSM_state_s * self);
+typedef bool (* event_handler_t)(struct HSM_state_s * self, void * event);
 
 typedef struct HSM_state_s {
     char const * name;
-    struct state_s * parent;
-    struct state_s * active_substate;
+    struct HSM_state_s * parent;
+    struct HSM_state_s * active_substate;
 
     state_handler_t on_entry;
     state_handler_t on_exit;
