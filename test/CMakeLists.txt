@@ -13,6 +13,7 @@ target_sources(
     "test_main.c"
     "test_active_state.c"
     "test_common_parent.c"
+    "test_handle_event.c"
     "test_root_state.c"
     "test_transition_to_deep_history.c"
     "test_transition_to_shallow_history.c"
