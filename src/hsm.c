@@ -1,9 +1,16 @@
 #include <assert.h>
 #include <stddef.h>
+#include <stdio.h>
 
 #include "hsm.h"
+#include "hsm_log.h"
 
-static HSM_state_t * root_state(HSM_state_t * state) {
+HSM_state_t * root_state(HSM_state_t * state) {
+    if (state == NULL) {
+        HSM_LOG("ERROR: root state requested for NULL.");
+        return NULL;
+    }
+
     while (state->parent != NULL) {
         state = state->parent;
     }
@@ -11,7 +18,12 @@ static HSM_state_t * root_state(HSM_state_t * state) {
     return state;
 }
 
-static HSM_state_t * active_state(HSM_state_t * machine) {
+HSM_state_t * active_state(HSM_state_t * machine) {
+    if (machine == NULL) {
+        HSM_LOG("ERROR: active state requested for NULL.")
+        return NULL;
+    }
+
     HSM_state_t * state = root_state(machine);
     while (state->active_substate != NULL) {
         state = state->active_substate;
@@ -20,7 +32,12 @@ static HSM_state_t * active_state(HSM_state_t * machine) {
     return state;
 }
 
-static HSM_state_t * common_parent(HSM_state_t * left, HSM_state_t * right) {
+HSM_state_t * common_parent(HSM_state_t * left, HSM_state_t * right) {
+    if (left == NULL || right == NULL) {
+        HSM_LOG("ERROR: common parent requested for NULL.");
+        return NULL;
+    }
+
     while (left != NULL) {
         HSM_state_t * r = right;
         while (r != NULL) {
@@ -38,13 +55,27 @@ static HSM_state_t * common_parent(HSM_state_t * left, HSM_state_t * right) {
     return NULL;
 }
 
-void transition_to_state(HSM_state_t * machine, HSM_state_t * state) {
+HSM_error_t transition_to_state(HSM_state_t * machine, HSM_state_t * state) {
+    if (machine == NULL || state == NULL) {
+        HSM_LOG("ERROR: transition to state requested for NULL.");
+        return HSM_ERROR_STATE_NOT_IN_MACHINE;
+    }
+
     HSM_state_t * s = active_state(machine);
     HSM_state_t * cp = common_parent(s, state);
 
-    assert(cp != NULL);
+    if (cp == NULL) {
+        HSM_LOG(
+            "ERROR: cannot transition to state %s. Not in machine %s.", 
+            state->name, 
+            machine->name
+        );
+        return HSM_ERROR_STATE_NOT_IN_MACHINE;
+    }
 
-    // Call `on_exit()` from active state up to, but not including common
+    HSM_LOG("Transitioning %s to %s", machine->name, state->name);
+
+    // Call `on_exit()` from active state up to, but not including, common
     // parent.
     while (s != cp) {
         if (s->on_exit != NULL) {
@@ -54,7 +85,8 @@ void transition_to_state(HSM_state_t * machine, HSM_state_t * state) {
     }
 
     // Update active state pointers from common parent to `state`.
-    s->active_substate = NULL;
+    state->active_substate = NULL;
+    s = state;
     while (s != cp) {
         HSM_state_t * p = s->parent;
         p->active_substate = s;
@@ -62,7 +94,7 @@ void transition_to_state(HSM_state_t * machine, HSM_state_t * state) {
     }
 
     // Call `on_entry()` for common parent's active state to `state`.
-    s = s->active_substate;
+    s = cp->active_substate;
     while (s != NULL) {
         if (s->on_entry != NULL) {
             s->on_entry(s);
@@ -70,26 +102,52 @@ void transition_to_state(HSM_state_t * machine, HSM_state_t * state) {
         s = s->active_substate;
     }
 
-    if (s->on_initialize != NULL) {
-        s->on_initialize(s);
+    if (state->on_initialize != NULL) {
+        state->on_initialize(s);
     }
+
+    return HSM_ERROR_OK;
 }
 
-void transition_to_shallow_history(HSM_state_t * machine, HSM_state_t * state) {
+HSM_error_t transition_to_shallow_history(HSM_state_t * machine, HSM_state_t * state) {
+    if (machine == NULL || state == NULL) {
+        HSM_LOG("ERROR: transition to shallow history requested for NULL.");
+        return HSM_ERROR_STATE_NOT_IN_MACHINE;
+    }
+
+    HSM_LOG("Transitioning %s to shallow history of state %s", machine->name, state->name);
+
     HSM_state_t * dest = (state->active_substate == NULL) ? 
         state : state->active_substate;
-    transition_to_state(machine, dest);
+    return transition_to_state(machine, dest);
 }
 
-void transition_to_deep_history(HSM_state_t * machine, HSM_state_t * state) {
+HSM_error_t transition_to_deep_history(HSM_state_t * machine, HSM_state_t * state) {
+    if (machine == NULL || state == NULL) {
+        HSM_LOG("ERROR: transition to deep history requested for NULL.");
+        return HSM_ERROR_STATE_NOT_IN_MACHINE;
+    }
+
+    HSM_LOG("Transitioning %s to deep history of state %s", machine->name, state->name);
+
     HSM_state_t * dest = state;
     while (dest->active_substate != NULL) {
         dest = dest->active_substate;
     }
-    transition_to_state(machine, dest);
+    return transition_to_state(machine, dest);
 }
 
-void handle_event(HSM_state_t * machine, HSM_event_t * event) {
+HSM_error_t handle_event(HSM_state_t * machine, HSM_event_t * event) {
+    if (machine == NULL || event == NULL) {
+        if (machine == NULL) {
+            HSM_LOG("ERROR: handle event requested for NULL state.");
+        }
+        if (event == NULL) {
+            HSM_LOG("ERROR: handle event requested with NULL event.");
+        }
+        return HSM_ERROR_EVENT_NOT_HANDLED;
+    }
+
     bool handled = false;
     HSM_state_t * s = active_state(machine);
     while (s != NULL && !handled) {
@@ -97,10 +155,22 @@ void handle_event(HSM_state_t * machine, HSM_event_t * event) {
         s = s->parent;
     }
 
-    assert(handled);
+    if (!handled) {
+        HSM_LOG(
+            "ERROR: Event %s not handled by state machine %s", 
+            event->name, 
+            machine->name
+        );
+        return HSM_ERROR_EVENT_NOT_HANDLED;
+    }
+    return HSM_ERROR_OK;
 }
 
 char const * active_state_name(HSM_state_t * machine) {
+    if (machine == NULL) {
+        return "NULL";
+    }
+
     HSM_state_t * state = active_state(machine);
     return state->name;
 }

@@ -1,0 +1,4 @@
+#pragma once
+
+void test_transition_to_deep_history_unentered_state(void);
+void test_transition_to_deep_history_previously_entered_state(void);
