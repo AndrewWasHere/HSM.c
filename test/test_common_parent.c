@@ -5,7 +5,7 @@
 HSM_state_t * common_parent(HSM_state_t * left, HSM_state_t * right);
 
 /**
- * @brief test common_parent()
+ * Test common_parent()
  * 
  * Test with the following state machine:
  * 
@@ -22,26 +22,11 @@ HSM_state_t * common_parent(HSM_state_t * left, HSM_state_t * right);
  * ```
  */
 void test_common_parent(void) {
-    HSM_state_t A = {
-        .name = "A",
-        .parent = NULL,
-    };
-    HSM_state_t B = {
-        .name = "B",
-        .parent = &A,
-    };
-    HSM_state_t C = {
-        .name = "C",
-        .parent = &A,
-    };
-    HSM_state_t D = {
-        .name = "D",
-        .parent = &C,
-    };
-    HSM_state_t E = {
-        .name = "E",
-        .parent = &C,
-    };
+    HSM_state_t A = { .name = "A", .parent = NULL, };
+    HSM_state_t B = { .name = "B", .parent = &A, };
+    HSM_state_t C = { .name = "C", .parent = &A, };
+    HSM_state_t D = { .name = "D", .parent = &C, };
+    HSM_state_t E = { .name = "E", .parent = &C, };
 
     // Common parent of any state and itself is itself.
     TEST_ASSERT_EQUAL_PTR(&A, common_parent(&A, &A));

@@ -6,7 +6,7 @@
 HSM_state_t * root_state(HSM_state_t * state);
 
 /**
- * @brief Test root_state()
+ * Test root_state()
  * 
  * Tests with the following state machine:
  * 
@@ -23,26 +23,11 @@ HSM_state_t * root_state(HSM_state_t * state);
  * ```
  */
 void test_root_state(void) {
-    HSM_state_t A = {
-        .name = "A",
-        .parent = NULL
-    };
-    HSM_state_t B = {
-        .name = "B",
-        .parent = &A
-    };
-    HSM_state_t C = {
-        .name = "C",
-        .parent = &A
-    };
-    HSM_state_t D = {
-        .name = "D",
-        .parent = &C
-    };
-    HSM_state_t E = {
-        .name = "E",
-        .parent = &C
-    };
+    HSM_state_t A = { .name = "A", .parent = NULL };
+    HSM_state_t B = { .name = "B", .parent = &A };
+    HSM_state_t C = { .name = "C", .parent = &A };
+    HSM_state_t D = { .name = "D", .parent = &C };
+    HSM_state_t E = { .name = "E", .parent = &C };
 
     TEST_ASSERT_EQUAL_PTR(&A, root_state(&A));
     TEST_ASSERT_EQUAL_PTR(&A, root_state(&B));

@@ -6,7 +6,7 @@
 HSM_state_t * active_state(HSM_state_t * machine);
 
 /**
- * @brief Test active_state() with a no-state machine.
+ * Test active_state() with a no-state machine.
  * 
  * Test with the following state machine:
  * 
@@ -25,7 +25,7 @@ void test_active_state_solo(void) {
 }
 
 /**
- * @brief Test active_state() with a heirarchical machine
+ * Test active_state() with a heirarchical machine
  * 
  * Test with the following state machine:
  * 
@@ -42,26 +42,11 @@ void test_active_state_solo(void) {
  * ```
  */
 void test_active_state_hierarchy(void) {
-    HSM_state_t A = {
-        .name = "A",
-        .parent = NULL,
-    };
-    HSM_state_t B = {
-        .name = "B",
-        .parent = &A,
-    };
-    HSM_state_t C = {
-        .name = "C",
-        .parent = &A,
-    };
-    HSM_state_t D = {
-        .name = "D",
-        .parent = &C,
-    };
-    HSM_state_t E = {
-        .name = "E",
-        .parent = &C,
-    };
+    HSM_state_t A = { .name = "A", .parent = NULL, };
+    HSM_state_t B = { .name = "B", .parent = &A, };
+    HSM_state_t C = { .name = "C", .parent = &A, };
+    HSM_state_t D = { .name = "D", .parent = &C, };
+    HSM_state_t E = { .name = "E", .parent = &C, };
 
     HSM_error_t err = transition_to_state(&A, &B);
     TEST_ASSERT_TRUE(err == HSM_ERROR_OK);

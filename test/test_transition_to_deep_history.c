@@ -18,7 +18,7 @@ State machine for these tests:
 */
 
 /**
- * Shallow history transition to a state that has not been entered before is the
+ * Deep history transition to a state that has not been entered before is the
  * transitioned-to state. 
  */
 void test_transition_to_deep_history_unentered_state(void) {
@@ -41,7 +41,7 @@ void test_transition_to_deep_history_unentered_state(void) {
 }
 
 /**
- * Shallow history transition to a state whose substate's child has been entered
+ * Deep history transition to a state whose substate's child has been entered
  * before is the substate.
  */
 void test_transition_to_deep_history_previously_entered_state(void) {

@@ -11,6 +11,17 @@ state charts).
 Embed the files in `src/` into your project. Then design your state machine. 
 Implement in source code, creating states objects, events, and event handlers.
 
+Generally speaking, you will have one instance of `HSM_state_t` for the state
+machine, and each state within the machine. For each of those instances, you
+will have functions to handle `on_event`, `on_entry` (if required), `on_exit`
+(if required), and `on_initialize` (if required). The data pointer for each
+state will _usually_ point to the same data structure which contains all the
+mutable data manipulated by the state machine.
+
+Similarly, you will create an `HSM_event_t` instance for each event begin 
+processed by the state machine. The event `data` pointer will point to the
+unique data for each event ID.
+
 ## Dependencies
 
 None! HSM.c is straight C11 code.
