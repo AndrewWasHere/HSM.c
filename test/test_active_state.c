@@ -50,4 +50,5 @@ void test_active_state_hierarchy(void) {
 
     HSM_error_t err = transition_to_state(&A, &B);
     TEST_ASSERT_TRUE(err == HSM_ERROR_OK);
+    TEST_ASSERT_EQUAL_PTR(&B, active_state(&A));
 }
