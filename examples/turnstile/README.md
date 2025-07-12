@@ -5,12 +5,14 @@ The Turnstile example implements the following state machine:
 ```plantuml
 @startuml
 state locked
-state unlocked {
-  token inserted / return token
-}
+state unlocked 
 
 [*] --> locked
-locked -> unlocked : token inserted / unlatch turnstile
-unlocked -> locked : turnstile actuated / latch turnstile
+locked : on entry / latch turnstile
+locked : turnstile entered / disallow entry
+locked -> unlocked : token inserted / keep token
+unlocked : on entry / unlatch turnstile
+unlocked : token inserted / return token
+unlocked -> locked : turnstile entered / allow entry
 @enduml
 ```

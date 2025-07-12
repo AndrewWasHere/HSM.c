@@ -1,0 +1,5 @@
+add_executable(turnstile)
+target_compile_definitions(turnstile PRIVATE HSM_LOGGING)
+target_include_directories(turnstile PRIVATE ../../src/)
+target_link_libraries(turnstile hsm)
+target_sources(turnstile PRIVATE main.c)
