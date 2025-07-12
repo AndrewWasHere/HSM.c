@@ -103,7 +103,7 @@ HSM_error_t transition_to_state(HSM_state_t * machine, HSM_state_t * state) {
     }
 
     if (state->on_initialize != NULL) {
-        state->on_initialize(s);
+        state->on_initialize(state);
     }
 
     return HSM_ERROR_OK;
