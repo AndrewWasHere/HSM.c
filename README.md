@@ -40,7 +40,8 @@ The `examples/` directory contains example projects that use HSM.c.
 The Turnstile example project simulates a turnstile using a state machine. For
 more information, see the Turnstile [README.md](examples/turnstile/README.md) 
 
-To build with Pixi, use `pixi run turnstile`.
+To build with Pixi, use ~~`pixi run turnstile`~~ `pixi shell`, then follow the
+CMake instructions.
 
 To build with CMake,
 
@@ -61,7 +62,7 @@ use `git submodule init` and `git submodule update` to pull it into the project.
 If you aren't going to run the unit tests against HSM.c, you do not need to pull
 in Unity.
 
-To build tests with Pixi, use `pixi run test`.
+To build tests with Pixi, use ~~`pixi run test`~~ `pixi shell`, then follow the CMake instructions.
 
 To build tests with CMake, 
 
