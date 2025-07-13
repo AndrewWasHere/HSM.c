@@ -8,6 +8,7 @@
 #include "test_transition_to_deep_history.h"
 #include "test_transition_to_shallow_history.h"
 #include "test_transition_to_state.h"
+#include "test_transition_to_state_with_initialize.h"
 
 void setUp(void) {}
 void tearDown(void) {}
@@ -27,5 +28,7 @@ int main() {
     RUN_TEST(test_transition_to_unreachable);
     RUN_TEST(test_transition_to_shallow_history_unentered_state);
     RUN_TEST(test_transition_to_shallow_history_previously_entered_state);
+    RUN_TEST(test_transition_to_reachable_with_initialize);
+    RUN_TEST(test_transition_to_unreachable_with_initialize);
     return UNITY_END();
 }

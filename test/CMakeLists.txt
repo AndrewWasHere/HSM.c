@@ -18,4 +18,5 @@ target_sources(
     "test_transition_to_deep_history.c"
     "test_transition_to_shallow_history.c"
     "test_transition_to_state.c"
+    "test_transition_to_state_with_initialize.c"
 )
