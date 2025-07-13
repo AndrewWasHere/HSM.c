@@ -22,6 +22,7 @@ Similarly, you will create an `HSM_event_t` instance for each event begin
 processed by the state machine. The event `data` pointer will point to the
 unique data for each event ID.
 
+
 ## Dependencies
 
 None! HSM.c is straight C11 code.
@@ -48,9 +49,11 @@ To build with CMake,
 ```shell
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Debug ..
+cmake [-DCMAKE_BUILD_TYPE=Debug] [-DLOGGING=true] ..
 cmake --build . --target turnstile
 ```
+
+where the command line flags in brackets are optional.
 
 ## Test
 
@@ -69,9 +72,11 @@ To build tests with CMake,
 ```shell
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Debug ..
+cmake [-DCMAKE_BUILD_TYPE=Debug] [-DLOGGING=true] ..
 cmake --build . --target hsm_test
 ```
+
+where the command line flags in brackets are optional.
 
 ## License
 

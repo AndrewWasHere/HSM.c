@@ -6,8 +6,11 @@ project(
     LANGUAGES C
 )
 
+option(LOGGING "Enable logging in hsm")
+
 add_subdirectory(test)
 add_subdirectory(examples/turnstile)
 add_library(hsm src/hsm.c)
-# Comment out the next line to disable logging in state machine
-target_compile_definitions(hsm PRIVATE HSM_LOGGING)
+if(LOGGING)
+    target_compile_definitions(hsm PRIVATE HSM_LOGGING)
+endif()
