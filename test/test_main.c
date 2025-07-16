@@ -21,6 +21,7 @@ int main() {
     RUN_TEST(test_handle_event_unhandled_event);
     RUN_TEST(test_handle_event_handled_event);
     RUN_TEST(test_handle_event_parent_handles_event);
+    RUN_TEST(test_handle_event_state_missing_on_event);
     RUN_TEST(test_root_state);
     RUN_TEST(test_transition_to_deep_history_unentered_state);
     RUN_TEST(test_transition_to_deep_history_previously_entered_state);

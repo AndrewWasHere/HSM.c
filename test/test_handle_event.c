@@ -138,3 +138,37 @@ void test_handle_event_parent_handles_event(void) {
     TEST_ASSERT_TRUE(L1_data.handled);
     TEST_ASSERT_FALSE(L2_data.handled);
 }
+
+/**
+ * Test that states with missing `on_event` handlers pass the event to the
+ * parent state.
+ * 
+ * State machine used for this test:
+ * 
+ * ```plantuml
+ * @startuml
+ * state machine {
+ *   state L1
+ *   note right "L1 does not have an event handler"
+ * }
+ * @enduml
+ */
+void test_handle_event_state_missing_on_event(void) {
+    // Set up
+    handled_data_t machine_data;
+    handled_data_t L1_data;
+    HSM_state_t machine = { .name = "machine", .parent = NULL, .on_event = machine_on_event, .data = &machine_data };
+    HSM_state_t L1 = { .name = "L1", .parent = &machine, .on_event = NULL, .data = &L1_data };
+    HSM_event_t event = { .id = HANDLED, .name = "event that should be handled" };
+    
+    HSM_error_t res = transition_to_state(&machine, &L1);
+    TEST_ASSERT_EQUAL_INT(HSM_ERROR_OK, res);
+
+    // Execute
+    res = handle_event(&machine, &event);
+
+    // Verify
+    TEST_ASSERT_EQUAL_INT(HSM_ERROR_OK, res);
+    TEST_ASSERT_TRUE(machine_data.handled);
+    TEST_ASSERT_FALSE(L1_data.handled);
+}

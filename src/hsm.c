@@ -151,7 +151,9 @@ HSM_error_t handle_event(HSM_state_t * machine, HSM_event_t * event) {
     bool handled = false;
     HSM_state_t * s = active_state(machine);
     while (s != NULL && !handled) {
-        handled = s->on_event(s, event);
+        if (s->on_event != NULL) {
+            handled = s->on_event(s, event);
+        }
         s = s->parent;
     }
 
